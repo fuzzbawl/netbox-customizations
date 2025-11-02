@@ -61,19 +61,22 @@ class NewVM(Script):
 
         vminterface = VMInterface(
             name=data["interface_name"],
-            virtual_machine=vm,
+            virtual_machine=vm
         )
         vminterface.full_clean()
         vminterface.save()
-        vmmacaddr = MACAddress(
-            mac_address = data["mac_address"],
-            assigned_object = vminterface
-        )
-        vmmacaddr.full_clean()
-        vmmacaddr.save()
-        setattr(vminterface, "primary_mac_address", vmmacaddr)
-        vminterface.full_clean()
-        vminterface.save()
+
+        if data["mac_address"]:
+            vmmacaddr = MACAddress(
+                mac_address = data["mac_address"],
+                assigned_object = vminterface
+            )
+            vmmacaddr.full_clean()
+            vmmacaddr.save()
+            setattr(vminterface, "primary_mac_address", vmmacaddr)
+            vminterface.full_clean()
+            vminterface.save()
+
         if data["disk_name"]:
             vmdisk = VirtualDisk(
                 name=data["disk_name"],
